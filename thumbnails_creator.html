@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js" type="text/javascript"></script>
+<script src="thumbnails_creator.js"></script>
+<link href="thumbnails_creator.css" rel="stylesheet" type="text/css">
+<title>thumbnails_creator</title>
+</head>
+<body>
+<div class="todo">
+<div class="url">
+<label for="enlace">URL del video: </label>
+<input type="text" id="enlace"><br>
+</center><button onClick="modificar(getElementById('enlace').value);">Cambiar enlace del video</button>
+</div>
+<div class="video">
+<video id="video" src="file:///C:/Users/Armando/Desktop/red.mp4" type="video/mp4" controls width="420px" height="200px"></video><br/>
+</div>
+<button onclick="capturar()">Capturar</button> <br/><br/>
+<button onclick="Play()">Play</button> <br/><br/>
+<div class="thun">
+<canvas id="canvas"></canvas> <br/><br/>
+<img crossOrigin="canvas"></img>
+</div>
+</div>
+<div class="local">
+</div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+.todo{
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+
+.url{
+	display: flex;
+	flex-direction: row;
+	
+}
