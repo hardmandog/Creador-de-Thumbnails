@@ -36,14 +36,17 @@ const drawPlayIcon = async (ctx, width, height) => {
       const x = width / 2 - img.width / 2;
       const y = height / 2 - img.height / 2;
       ctx.drawImage(img, x, y);
-      resolve();
+      resolve(true);
     };
     img.onerror = () => {
       setMensaje('No se encontró el ícono play.png en la carpeta.', 'error');
-      resolve();
+      resolve(false);
     };
   });
 };
+
+let thumbnailReady = false;
+let overlayApplied = false;
 
 const updatePreview = () => {
   const dataUrl = canvas.toDataURL('image/png');
@@ -53,19 +56,33 @@ const updatePreview = () => {
 };
 
 const captureFrame = async () => {
-  if (video.readyState < 2) return;
+  if (video.readyState < 2) {
+    setMensaje('Reproduce el video hasta el segundo deseado antes de capturar.', 'error');
+    return false;
+  }
   canvas.width = video.videoWidth || 600;
   canvas.height = video.videoHeight || 338;
   const ctx = canvas.getContext('2d');
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  thumbnailReady = true;
+  overlayApplied = false;
   updatePreview();
+  setMensaje('Frame capturado. Ahora puedes agregar el ícono de play.');
+  return true;
 };
 
 const addPlayOverlay = async () => {
-  if (!canvas.width || !canvas.height) await captureFrame();
+  if (!thumbnailReady) {
+    const captured = await captureFrame();
+    if (!captured) return false;
+  }
   const ctx = canvas.getContext('2d');
-  await drawPlayIcon(ctx, canvas.width, canvas.height);
+  const overlayOk = await drawPlayIcon(ctx, canvas.width, canvas.height);
+  if (!overlayOk) return false;
+  overlayApplied = true;
   updatePreview();
+  setMensaje('Ícono agregado. Ya puedes descargar el thumbnail.');
+  return true;
 };
 
 const setVideoSource = (src) => {
@@ -94,9 +111,21 @@ const handleUrlChange = () => {
   setVideoSource(value);
 };
 
-const downloadImage = () => {
+const downloadImage = async () => {
+  if (!thumbnailReady) {
+    setMensaje('No hay thumbnail para descargar. Captura un frame primero.', 'error');
+    return;
+  }
+  if (!overlayApplied) {
+    const overlayOk = await addPlayOverlay();
+    if (!overlayOk) return;
+  }
+
   const url = downloadButton.dataset.url;
-  if (!url) return;
+  if (!url) {
+    setMensaje('Ocurrió un problema al preparar la imagen. Intenta de nuevo.', 'error');
+    return;
+  }
   const anchor = document.createElement('a');
   anchor.href = url;
   anchor.download = 'thumbnail.png';
@@ -125,6 +154,8 @@ const mostrarErrorVideo = () => {
 video.addEventListener('loadeddata', () => {
   downloadButton.disabled = true;
   preview.removeAttribute('src');
+  thumbnailReady = false;
+  overlayApplied = false;
   setMensaje('Video listo. Mueve la barra para elegir el momento a capturar.');
 });
 

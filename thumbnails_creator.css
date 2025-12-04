@@ -123,6 +123,10 @@ canvas,
   background: #020617;
 }
 
+canvas {
+  display: none;
+}
+
 #preview {
   max-height: 320px;
   object-fit: contain;
