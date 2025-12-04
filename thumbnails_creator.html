@@ -1,29 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<script src="https://code.jquery.com/jquery-3.1.0.min.js" type="text/javascript"></script>
-<script src="thumbnails_creator.js"></script>
-<link href="thumbnails_creator.css" rel="stylesheet" type="text/css">
-<title>thumbnails_creator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Creador de Thumbnails</title>
+  <link href="thumbnails_creator.css" rel="stylesheet" type="text/css" />
+  <script src="thumbnails_creator.js" defer></script>
 </head>
 <body>
-<div class="todo">
-<div class="url">
-<label for="enlace">URL del video: </label>
-<input type="text" id="enlace"><br>
-</center><button onClick="modificar(getElementById('enlace').value);">Cambiar enlace del video</button>
-</div>
-<div class="video">
-<video id="video" src="file:///C:/Users/Armando/Desktop/red.mp4" type="video/mp4" controls width="420px" height="200px"></video><br/>
-</div>
-<button onclick="capturar()">Capturar</button> <br/><br/>
-<button onclick="Play()">Play</button> <br/><br/>
-<div class="thun">
-<canvas id="canvas"></canvas> <br/><br/>
-<img crossOrigin="canvas"></img>
-</div>
-</div>
-<div class="local">
-</div>
+  <main class="page">
+    <header class="header">
+      <h1>Creador de thumbnails</h1>
+      <p>Sube un video, captura un frame y colócale un ícono de play listo para compartir.</p>
+    </header>
+
+    <section class="controls">
+      <div class="field">
+        <label for="video-file">Selecciona un video local</label>
+        <input type="file" id="video-file" accept="video/*" />
+      </div>
+
+      <div class="field">
+        <label for="enlace">O pega un enlace directo</label>
+        <input type="url" id="enlace" placeholder="https://..." />
+        <button type="button" id="cambiar-enlace">Cargar video</button>
+      </div>
+
+      <div class="field field--inline field--slider">
+        <label for="seek">Moverse en el video</label>
+        <input type="range" id="seek" min="0" max="0" value="0" step="0.1" disabled />
+        <output id="timestamp" for="seek">00:00</output>
+      </div>
+
+      <div class="field field--inline">
+        <button type="button" id="capturar">Capturar frame</button>
+        <button type="button" id="play">Agregar ícono de Play</button>
+        <button type="button" id="descargar" disabled>Descargar PNG</button>
+      </div>
+
+      <div id="mensajes" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="workspace">
+      <div class="video-wrapper">
+        <video id="video" preload="metadata" controls width="480" height="270">
+          <source src="" type="video/mp4" />
+          Tu navegador no soporta la reproducción de video.
+        </video>
+      </div>
+
+      <div class="canvas-wrapper">
+        <canvas id="canvas" aria-label="Thumbnail generado"></canvas>
+        <img id="preview" alt="Vista previa del thumbnail" />
+      </div>
+    </section>
+  </main>
 </body>
 </html>
